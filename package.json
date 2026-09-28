@@ -1,0 +1,46 @@
+{
+    "name": "hex-tex-gen-studio",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Proof of concept: a web app designing textures with @laboralphy/hex-tex-gen, for the raycaster-386 map editor",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "typecheck": "vue-tsc -b",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "format": "prettier --check .",
+        "format:fix": "prettier --write .",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "check": "npm run typecheck && npm run lint && npm run format && npm run test && npm run build"
+    },
+    "dependencies": {
+        "@laboralphy/hex-tex-gen": "file:../hex-tex-gen",
+        "pinia": "^4.0.3",
+        "vue": "^3.5.42"
+    },
+    "devDependencies": {
+        "@types/node": "^24.13.3",
+        "@vitejs/plugin-vue": "^6.0.8",
+        "@vue/test-utils": "^2.5.1",
+        "@vue/tsconfig": "^0.9.1",
+        "eslint": "^10.10.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-vue": "^10.11.0",
+        "happy-dom": "^20.14.5",
+        "prettier": "^3.9.8",
+        "typescript": "~6.0.2",
+        "typescript-eslint": "^8.70.0",
+        "vite": "^8.3.0",
+        "vitest": "^5.0.1",
+        "vue-tsc": "^3.3.11"
+    },
+    "author": {
+        "name": "Raphaël Marandet",
+        "email": "raphael.marandet@gmail.com"
+    },
+    "license": "MIT"
+}
