@@ -58,7 +58,12 @@ export class Renderer {
         const worker = this.workers[this.turn++ % this.workers.length];
         const result = await new Promise<Rendered>((resolve, reject) => {
             this.pending.set(id, { resolve, reject });
-            const request: RenderRequest = { id, definition: structuredClone(definition) };
+            // a JSON copy, not structuredClone: the definitions of the store hold Vue
+            // proxies, which cannot be cloned
+            const request: RenderRequest = {
+                id,
+                definition: JSON.parse(JSON.stringify(definition)) as TextureDefinition,
+            };
             worker.postMessage(request);
         });
         return this.latest.get(channel) === id ? result : undefined;

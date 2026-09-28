@@ -5,13 +5,13 @@
  */
 import { templateCatalog } from '@laboralphy/hex-tex-gen';
 import { computed, ref } from 'vue';
-import { anchorTargets, type Decoration } from '../libs/recipe';
+import { anchorTargets, DECORATION_CATEGORIES, type Decoration } from '../libs/recipe';
 import { useRecipeStore } from '../stores/recipe';
 import ParameterForm from './ParameterForm.vue';
 
 const store = useRecipeStore();
 const catalog = templateCatalog();
-const decorative = catalog.filter((t) => t.category !== 'surface' && t.category !== 'ground');
+const decorative = catalog.filter((t) => DECORATION_CATEGORIES.includes(t.category));
 const adding = ref(decorative[0]?.name ?? '');
 const open = ref<string>();
 
@@ -58,7 +58,7 @@ function add(): void {
         <div class="add">
             <select v-model="adding">
                 <optgroup
-                    v-for="category in ['natural', 'civilized', 'dungeon', 'architecture']"
+                    v-for="category in DECORATION_CATEGORIES"
                     :key="category"
                     :label="category"
                 >

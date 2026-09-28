@@ -1,7 +1,7 @@
 # Hex-Tex-Gen Studio
 
 A proof of concept: a web app designing textures with
-[`@laboralphy/hex-tex-gen`](../hex-tex-gen), meant to move into the
+[`@laboralphy/hex-tex-gen`](https://www.npmjs.com/package/@laboralphy/hex-tex-gen), meant to move into the
 [raycaster-386 map editor](../raycaster386-map-editor) once it has proved its worth.
 
 Searching for textures is one of the costliest parts of making a level. The studio
@@ -46,15 +46,14 @@ TypeScript), so that the components move over unchanged.
 
 ## The library dependency
 
-Until the library is published, it is taken from the sibling directory:
+The library is taken from npm:
 
 ```json
-"@laboralphy/hex-tex-gen": "file:../hex-tex-gen"
+"@laboralphy/hex-tex-gen": "^0.1.0"
 ```
 
-which uses its built `dist/`: run `npm run build` in `../hex-tex-gen` after changing it.
-Once the library is on npm, replace it with a version range, such as `"^0.2.0"`, and run
-`npm install`.
+To pick up a new release, raise the range and run `npm install`. To try unpublished changes
+of `../hex-tex-gen`, build it there and `npm link` it here, then `npm install` to go back.
 
 ## Towards the map editor
 

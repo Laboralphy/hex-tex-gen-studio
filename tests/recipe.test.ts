@@ -2,6 +2,8 @@ import { createMemoryLoader, renderTexture } from '@laboralphy/hex-tex-gen';
 import { describe, expect, it } from 'vitest';
 import {
     anchorTargets,
+    coveredByDecoration,
+    DECORATION_CATEGORIES,
     layerParams,
     newDecoration,
     toDefinition,
@@ -60,6 +62,23 @@ describe('recipe', () => {
         expect([d.width, d.height]).toEqual([38, 33]);
         expect([d.x, d.y]).toEqual([31, 34]);
         expect(newDecoration('shield', [64, 96]).id).not.toBe(d.id);
+    });
+
+    it('renders the slab and the wooden beam as decorations', () => {
+        const r = recipe();
+        r.decorations.push(newDecoration('stoneslab', r.size), newDecoration('woodbeam', r.size));
+        const texture = renderTexture(toDefinition(r), createMemoryLoader({}));
+        expect([texture.width, texture.height]).toEqual([64, 96]);
+        expect(DECORATION_CATEGORIES).not.toContain('surface');
+        expect(DECORATION_CATEGORIES).toContain('architecture');
+    });
+
+    it('leaves out of a base the groups a decoration duplicates', () => {
+        expect(coveredByDecoration('moss.palette', 'ashlar')).toBe(true);
+        expect(coveredByDecoration('moss.coverage', 'stoneslab')).toBe(true);
+        expect(coveredByDecoration('moss.palette', 'moss')).toBe(false);
+        expect(coveredByDecoration('stone.palette', 'ashlar')).toBe(false);
+        expect(coveredByDecoration('age', 'ashlar')).toBe(false);
     });
 
     it('anchors decorations to the base and to earlier free layers with anchors', () => {

@@ -10,7 +10,7 @@ import ParameterForm from './components/ParameterForm.vue';
 import TemplateGallery from './components/TemplateGallery.vue';
 import TextureCanvas from './components/TextureCanvas.vue';
 import { usePreview } from './composables/usePreview';
-import { SIZE_PRESETS } from './libs/recipe';
+import { BASE_CATEGORIES, SIZE_PRESETS } from './libs/recipe';
 import { useRecipeStore } from './stores/recipe';
 
 const store = useRecipeStore();
@@ -60,7 +60,7 @@ function setSize(index: number, value: number): void {
         </header>
         <aside class="templates">
             <TemplateGallery
-                :categories="['surface', 'ground']"
+                :categories="BASE_CATEGORIES"
                 :selected="store.recipe.base.template"
                 @pick="store.setBaseTemplate"
             />

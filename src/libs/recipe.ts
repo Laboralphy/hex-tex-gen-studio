@@ -1,10 +1,22 @@
 import {
+    CATEGORIES,
     deepMerge,
     expandPath,
     templateCatalog,
     type Placement,
     type TextureDefinition,
 } from '@laboralphy/hex-tex-gen';
+
+/** the category of a template, as the library lists them */
+export type Category = (typeof CATEGORIES)[number];
+
+/** the categories of the templates covering a whole texture: walls, floors and ceilings */
+export const BASE_CATEGORIES: Category[] = ['surface', 'ground'];
+
+/** the categories of the templates laid over a base, in the library's order */
+export const DECORATION_CATEGORIES: Category[] = CATEGORIES.filter(
+    (c) => !BASE_CATEGORIES.includes(c)
+);
 
 /**
  * A texture as the studio edits it: a base layer covering the texture, and decorations
@@ -100,6 +112,21 @@ export function anchorTargets(recipe: Recipe, index: number): Layer[] {
         recipe.base,
         ...recipe.decorations.slice(0, index).filter((d) => d.mode === 'free'),
     ].filter(hasAnchors);
+}
+
+/**
+ * Whether a parameter of a layer is left out of its form: a group named after another
+ * decoration template (the `moss` of the walls and of `stoneslab`) duplicates that
+ * decoration, which is the one way to add it.
+ */
+export function coveredByDecoration(path: string, template: string): boolean {
+    const group = path.split('.')[0];
+    return (
+        group !== template &&
+        templateCatalog().some(
+            (t) => t.name === group && DECORATION_CATEGORIES.includes(t.category)
+        )
+    );
 }
 
 let nextId = 1;

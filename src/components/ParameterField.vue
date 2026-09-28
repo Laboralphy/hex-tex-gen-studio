@@ -6,7 +6,7 @@
  */
 import type { ParameterInfo } from '@laboralphy/hex-tex-gen';
 import { computed, ref, watch } from 'vue';
-import { toHexColor } from '../libs/colors';
+import { interpolatePalette, toHexColor } from '../libs/colors';
 
 const props = defineProps<{
     info: ParameterInfo;
@@ -186,6 +186,14 @@ function applyJson(): void {
                         <button type="button" title="one more color" @click="addColor">+</button>
                         <button type="button" title="one color less" @click="removeColor">−</button>
                     </template>
+                    <button
+                        v-if="colors.length > 2"
+                        type="button"
+                        title="the colors between the first and the last, as an even gradient"
+                        @click="emit('update', interpolatePalette(colors))"
+                    >
+                        interpolate
+                    </button>
                 </span>
                 <span v-else-if="info.kind === 'range' || info.kind === 'pair'" class="pair">
                     <input

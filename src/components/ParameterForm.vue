@@ -4,6 +4,7 @@
  */
 import { describeParameters, generators } from '@laboralphy/hex-tex-gen';
 import { computed, ref } from 'vue';
+import { coveredByDecoration } from '../libs/recipe';
 import { useRecipeStore } from '../stores/recipe';
 import ParameterField from './ParameterField.vue';
 
@@ -14,7 +15,8 @@ const all = ref(false);
 const layer = computed(() => store.layer(props.layerId));
 const parameters = computed(() => {
     const generator = layer.value && generators[layer.value.template];
-    return generator ? describeParameters(generator) : [];
+    const described = generator ? describeParameters(generator) : [];
+    return described.filter((p) => !coveredByDecoration(p.path, layer.value?.template ?? ''));
 });
 const shown = computed(() => parameters.value.filter((p) => all.value || p.essential));
 const changed = computed(() => Object.keys(layer.value?.values ?? {}).length);
