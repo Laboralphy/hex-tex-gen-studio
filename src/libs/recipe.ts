@@ -28,6 +28,12 @@ export type Recipe = {
     size: [number, number];
     /** the seed of the whole texture: rerolling it redraws every layer */
     seed: number;
+    /**
+     * whether decorations may cross an edge and continue on the opposite side, so that the
+     * texture tiles with itself; false keeps them inside, for a texture laid next to others;
+     * the library's default (true) when unset
+     */
+    wrap?: boolean;
     base: Layer;
     decorations: Decoration[];
 };
@@ -56,6 +62,10 @@ export type Decoration = Layer & {
     ratio: number;
     mirror: boolean;
     opacity: number;
+    /** its own seed, to redraw it alone: a glyph, a splash; the texture's seed when unset */
+    seed?: number;
+    /** whether it may cross an edge; the texture's `wrap` when unset */
+    wrap?: boolean;
 };
 
 /** size presets of the raycaster-386 engine */
@@ -88,7 +98,15 @@ export function toDefinition(recipe: Recipe): TextureDefinition {
     };
     const decorations = recipe.decorations.map((d): Placement => {
         const patch = { template: d.template, ...layerParams(d.values) };
-        const common = { id: d.id, patch, width: d.width, height: d.height, opacity: d.opacity };
+        const common = {
+            id: d.id,
+            patch,
+            width: d.width,
+            height: d.height,
+            opacity: d.opacity,
+            ...(d.seed === undefined ? {} : { seed: d.seed }),
+            ...(d.wrap === undefined ? {} : { wrap: d.wrap }),
+        };
         if (d.mode === 'anchor') {
             return {
                 ...common,
@@ -97,7 +115,12 @@ export function toDefinition(recipe: Recipe): TextureDefinition {
         }
         return { ...common, x: d.x, y: d.y };
     });
-    return { size: recipe.size, seed: recipe.seed, patches: [base, ...decorations] };
+    return {
+        size: recipe.size,
+        seed: recipe.seed,
+        ...(recipe.wrap === undefined ? {} : { wrap: recipe.wrap }),
+        patches: [base, ...decorations],
+    };
 }
 
 /**

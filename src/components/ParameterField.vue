@@ -7,6 +7,7 @@
 import type { ParameterInfo } from '@laboralphy/hex-tex-gen';
 import { computed, ref, watch } from 'vue';
 import { interpolatePalette, toHexColor } from '../libs/colors';
+import { sliderBounds } from '../libs/parameters';
 
 const props = defineProps<{
     info: ParameterInfo;
@@ -50,13 +51,7 @@ const step = computed(() => {
     const { minimum, maximum } = props.info;
     return minimum !== undefined && maximum !== undefined && maximum - minimum <= 2 ? 0.01 : 0.1;
 });
-const sliding = computed(
-    () =>
-        (props.info.kind === 'number' || props.info.kind === 'integer') &&
-        props.info.minimum !== undefined &&
-        props.info.maximum !== undefined &&
-        Number.isFinite(props.info.maximum)
-);
+const slider = computed(() => sliderBounds(props.info));
 
 function number(event: Event): void {
     const n = Number((event.target as HTMLInputElement).value);
@@ -135,10 +130,10 @@ function applyJson(): void {
             <template v-if="!auto">
                 <template v-if="info.kind === 'number' || info.kind === 'integer'">
                     <input
-                        v-if="sliding"
+                        v-if="slider"
                         type="range"
-                        :min="info.minimum"
-                        :max="info.maximum"
+                        :min="slider[0]"
+                        :max="slider[1]"
                         :step="step"
                         :value="current as number"
                         @input="number"

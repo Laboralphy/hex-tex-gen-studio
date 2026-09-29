@@ -18,7 +18,7 @@
         "check": "npm run typecheck && npm run lint && npm run format && npm run test && npm run build"
     },
     "dependencies": {
-        "@laboralphy/hex-tex-gen": "^0.2.0",
+        "@laboralphy/hex-tex-gen": "^0.5.0",
         "@laboralphy/rainbow": "^3.0.0",
         "pinia": "^4.0.3",
         "vue": "^3.5.42"

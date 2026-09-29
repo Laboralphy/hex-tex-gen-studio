@@ -47,6 +47,27 @@ function num(event: Event): number {
     return Number((event.target as HTMLInputElement).value);
 }
 
+function setSeed(d: Decoration, event: Event): void {
+    const text = (event.target as HTMLInputElement).value.trim();
+    const seed = Math.round(Number(text));
+    store.updateDecoration(d.id, {
+        seed: text === '' || !Number.isFinite(seed) ? undefined : seed,
+    });
+}
+
+function rerollDecoration(d: Decoration): void {
+    store.updateDecoration(d.id, { seed: Math.floor(Math.random() * 1_000_000) });
+}
+
+function wrapChoice(d: Decoration): 'texture' | 'wrap' | 'inside' {
+    return d.wrap === undefined ? 'texture' : d.wrap ? 'wrap' : 'inside';
+}
+
+function setWrap(d: Decoration, event: Event): void {
+    const choice = (event.target as HTMLSelectElement).value;
+    store.updateDecoration(d.id, { wrap: choice === 'texture' ? undefined : choice === 'wrap' });
+}
+
 function add(): void {
     store.addDecoration(adding.value);
     open.value = store.recipe.decorations[store.recipe.decorations.length - 1]?.id;
@@ -216,6 +237,29 @@ function add(): void {
                         :value="d.opacity"
                         @change="store.updateDecoration(d.id, { opacity: num($event) })"
                 /></label>
+                <label title="its own seed, to redraw it alone; empty for the texture's seed"
+                    >seed
+                    <input
+                        type="number"
+                        placeholder="texture"
+                        :value="d.seed ?? ''"
+                        @change="setSeed(d, $event)"
+                    />
+                    <button type="button" title="redraw it alone" @click="rerollDecoration(d)">
+                        reroll
+                    </button>
+                </label>
+                <label
+                    title="whether it may cross an edge and continue on the opposite side; inside, a placed decoration is shifted back in, and anchored copies crossing an edge are skipped"
+                    >edges
+                    <select :value="wrapChoice(d)" @change="setWrap(d, $event)">
+                        <option value="texture">
+                            as the texture ({{ store.recipe.wrap === false ? 'inside' : 'wrap' }})
+                        </option>
+                        <option value="wrap">wrap around</option>
+                        <option value="inside">stay inside</option>
+                    </select>
+                </label>
             </div>
             <ParameterForm v-if="open === d.id" :layer-id="d.id" />
         </div>

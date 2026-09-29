@@ -4,6 +4,7 @@
  */
 import { describeParameters, generators } from '@laboralphy/hex-tex-gen';
 import { computed, ref } from 'vue';
+import { isRelevant } from '../libs/parameters';
 import { coveredByDecoration } from '../libs/recipe';
 import { useRecipeStore } from '../stores/recipe';
 import ParameterField from './ParameterField.vue';
@@ -18,7 +19,13 @@ const parameters = computed(() => {
     const described = generator ? describeParameters(generator) : [];
     return described.filter((p) => !coveredByDecoration(p.path, layer.value?.template ?? ''));
 });
-const shown = computed(() => parameters.value.filter((p) => all.value || p.essential));
+// parameters without effect with the choices made ("grid only" on a pentagram) are hidden
+const shown = computed(() =>
+    parameters.value.filter(
+        (p) =>
+            (all.value || p.essential) && isRelevant(p, parameters.value, layer.value?.values ?? {})
+    )
+);
 const changed = computed(() => Object.keys(layer.value?.values ?? {}).length);
 </script>
 

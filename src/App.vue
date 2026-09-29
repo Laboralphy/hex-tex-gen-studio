@@ -57,6 +57,21 @@ function setSize(index: number, value: number): void {
                 <input v-model.number="store.recipe.seed" type="number" />
                 <button type="button" @click="store.reroll()">reroll</button>
             </span>
+            <label
+                class="wrap"
+                title="decorations crossing an edge continue on the opposite side, so that the texture tiles with itself; unchecked, they stay inside, for a texture laid next to others"
+            >
+                <input
+                    type="checkbox"
+                    :checked="store.recipe.wrap !== false"
+                    @change="
+                        store.recipe.wrap = ($event.target as HTMLInputElement).checked
+                            ? undefined
+                            : false
+                    "
+                />
+                decorations wrap around the edges
+            </label>
         </header>
         <aside class="templates">
             <TemplateGallery
@@ -128,6 +143,12 @@ h2 {
     display: flex;
     gap: 0.3em;
     align-items: center;
+}
+.wrap {
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+    font-size: 0.85em;
 }
 .sizes input,
 .seed input {
