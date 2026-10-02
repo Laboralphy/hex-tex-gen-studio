@@ -2,11 +2,11 @@ import type { ParameterInfo } from '@laboralphy/hex-tex-gen';
 
 /**
  * The options a parameter is limited to, as its description states them: "grid only: ...",
- * "wood only: ...", "heap or grid only, ...".
+ * "wood only: ...", "heap or grid only, ...", "gash, pocks or slits only: ...".
  */
 function onlyOptions(info: ParameterInfo): string[] | undefined {
-    const match = /^([\w-]+(?: or [\w-]+)*) only[:,]/.exec(info.description ?? '');
-    return match?.[1].split(' or ');
+    const match = /^([\w-]+(?:(?:, | or )[\w-]+)*) only[:,]/.exec(info.description ?? '');
+    return match?.[1].split(/, | or /);
 }
 
 /**

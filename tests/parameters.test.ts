@@ -1,4 +1,4 @@
-import { describeParameters, generators } from '@laboralphy/hex-tex-gen';
+import { describeParameters, generators, type ParameterInfo } from '@laboralphy/hex-tex-gen';
 import { describe, expect, it } from 'vitest';
 import { dependsOn, isRelevant, sliderBounds } from '../src/libs/parameters';
 
@@ -18,6 +18,32 @@ describe('parameters', () => {
             options: ['grid'],
         });
         expect(dependsOn(param(glyph, 'chaos'), glyph)).toBeUndefined();
+    });
+
+    it('reads lists of options, with commas', () => {
+        const shape: ParameterInfo = {
+            path: 'hole.shape',
+            kind: 'enum',
+            description: 'shape of the hole',
+            default: 'burst',
+            options: ['burst', 'gash', 'pocks', 'slits'],
+            fromAge: false,
+            essential: true,
+        };
+        const count: ParameterInfo = {
+            path: 'hole.count',
+            kind: 'integer',
+            description: 'gash, pocks or slits only: number of slashes, holes or slits',
+            default: 3,
+            fromAge: false,
+            essential: false,
+        };
+        expect(dependsOn(count, [shape, count])).toEqual({
+            path: 'hole.shape',
+            options: ['gash', 'pocks', 'slits'],
+        });
+        expect(isRelevant(count, [shape, count], {})).toBe(false);
+        expect(isRelevant(count, [shape, count], { 'hole.shape': 'slits' })).toBe(true);
     });
 
     it('hides the parameters of the other choices', () => {
